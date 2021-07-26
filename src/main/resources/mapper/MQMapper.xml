@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ffcs.mapper.MQMapper">
+    <sql id="columns">
+        id, tenant_id tenantId, user_id userId, prod_specid prodSpecId,
+        out_userid outUserId, vpc_id vpcId, brokerClusterName,
+        namesrvClusterName, clusterInstanceName, ssh_info sshInfo,
+        path_perfix pathPerfix, version, zk_address zkAddress,
+        zk_ssl zkSsl, order_id orderId, `state`, prop, crt_time crtTime,
+        mod_time modTime, bak_int_1 bakInt1, bak_int_2 bakInt2,
+        bak_varchar_1 bakVarchar1, bak_varchar_2 bakVarchar2,
+        ipv6_flag ipv6Flag, `delete`, sync_time syncTime
+    </sql>
+    <insert id="saveMQInstance" parameterType="list">
+        INSERT IGNORE INTO mq_cluster
+            (id, tenant_id, user_id, prod_specid, out_userid, vpc_id, brokerClusterName,
+            namesrvClusterName, clusterInstanceName, ssh_info, path_perfix, version,
+            zk_address, zk_ssl, order_id, `state`, prop, crt_time, mod_time,
+            bak_int_1, bak_int_2, bak_varchar_1, bak_varchar_2, ipv6_flag)
+            VALUES
+        <foreach collection="list" separator="," item="item">
+            (#{item.id}, #{item.tenantId}, #{item.userId}, #{item.prodSpecId},
+            #{item.outUserId}, #{item.vpcId}, #{item.brokerClusterName},
+            #{item.namesrvClusterName}, #{item.clusterInstanceName}, #{item.sshInfo},
+            #{item.pathPerfix}, #{item.version}, #{item.zkAddress}, #{item.zkSsl},
+            #{item.orderId}, #{item.state}, #{item.prop}, #{item.crtTime}, #{item.modTime},
+            #{item.bakInt1}, #{item.bakInt2}, #{item.bakVarchar1}, #{item.bakVarchar2}, #{item.ipv6Flag})
+        </foreach>
+    </insert>
+
+    <select id="queryMQInstanceList" resultType="MQInstance">
+        SELECT <include refid="columns"/>
+        FROM mq_cluster
+<!--        WHERE `DELETE` = 0-->
+        <if test="limit != null and offset != null">
+            LIMIT #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="queryMQInstanceById" parameterType="int" resultType="MQInstance">
+        SELECT <include refid="columns"/>
+        FROM mq_cluster
+        WHERE `DELETE` = 0 AND id = #{id}
+    </select>
+
+    <update id="deleteMQInstance" parameterType="list">
+        UPDATE mq_cluster
+        SET `delete` = 1, sync_time = CURRENT_TIMESTAMP
+        WHERE id IN
+        <foreach collection="list" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </update>
+</mapper>
