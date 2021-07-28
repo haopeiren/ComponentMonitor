@@ -58,7 +58,7 @@ public class LogAspect {
      * @throws Throwable Throwable
      */
     @Around("executeController()")
-    public void around(ProceedingJoinPoint joinPoint) throws Throwable {
+    public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
         MethodSignature methodSignature = (MethodSignature)joinPoint.getSignature();
         Method method = methodSignature.getMethod();
         Parameter[] parameters = method.getParameters();
@@ -74,8 +74,9 @@ public class LogAspect {
             startLog.append("]");
         }
         log.info(startLog.toString());
-        joinPoint.proceed();
+        Object result = joinPoint.proceed();
         log.info(methodName + " end");
+        return result;
     }
 
     private Map<String, Object> getParamMap(Object[] args, Parameter[] parameters) {

@@ -1,8 +1,9 @@
 package com.ffcs.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ffcs.model.MQInstance;
 import com.ffcs.response.ListMQInstanceResp;
-import com.ffcs.service.MQService;
+import com.ffcs.service.impl.MQService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -31,21 +32,18 @@ public class MQController {
     /**
      * 查询MQ实例列表
      *
-     * @param limit 查询数目
-     * @param offset    偏移量
+     * @param page 当前页
+     * @param size    每页大小
      * @return  实例列表
      */
     @ApiOperation(value = "查询MQ实例列表")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "limit", value = "查询条数"),
-            @ApiImplicitParam(name = "offset", value = "偏移量")
+            @ApiImplicitParam(name = "page", value = "当前页"),
+            @ApiImplicitParam(name = "size", value = "每页大小")
     })
     @GetMapping(value = "/mq/instances")
-    public ListMQInstanceResp listMQInstance(Integer limit, Integer offset) {
-        List<MQInstance> mqInstanceVOList = mqService.listMQInstance(limit, offset);
-        ListMQInstanceResp resp = new ListMQInstanceResp();
-        resp.setInstances(mqInstanceVOList);
-        return resp;
+    public IPage<MQInstance> listMQInstance(Integer page, Integer size) {
+        return mqService.listMQInstance(page, size);
     }
 
     /**
@@ -55,6 +53,6 @@ public class MQController {
     @PostMapping(value = "/mq/instances/refresh")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void refreshMQInstance() {
-        mqService.syncMQInstanceInfo();
+        mqService.syncMQInstance();
     }
 }

@@ -1,9 +1,9 @@
 package com.ffcs.controller;
 
-import com.ffcs.enums.ErrorCode;
-import com.ffcs.exception.ServiceException;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.ffcs.dto.HostListDto;
 import com.ffcs.model.Host;
-import com.ffcs.service.HostService;
+import com.ffcs.service.impl.HostService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -14,14 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.Min;
-import java.io.IOException;
-import java.util.List;
 
 /**
  * 主机controller
@@ -38,35 +35,22 @@ public class HostController {
     private HostService hostService;
 
     @ApiOperation(value = "导入主机列表")
-    @PostMapping(value = "/hosts/import")
-    public void importHostData(@RequestParam("file") MultipartFile dataFile) {
-        hostService.importHostData(dataFile);
+    @PostMapping(value = "/hosts")
+    public void importHostData(@RequestBody HostListDto hostList) {
+        hostService.importHosts(hostList);
     }
 
     @ApiOperation(value = "查询主机列表")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "limit", value = "查询条数"),
-            @ApiImplicitParam(name = "offset", value = "偏移量"),
+            @ApiImplicitParam(name = "page", value = "当前页"),
+            @ApiImplicitParam(name = "size", value = "每页大小"),
             @ApiImplicitParam(name = "ip", value = "ip"),
-            @ApiImplicitParam(name = "name", value = "主机名")
     })
     @GetMapping(value = "/hosts")
-    public List<Host> listHost(
-            @RequestParam @Min(10) Integer limit,
-            @RequestParam @Min(0) Integer offset,
-            @RequestParam(required = false) @Length(max = 64) String ip,
-            String name) {
-        return hostService.listHost(limit, offset, ip, name);
-    }
-
-    @ApiOperation(value = "下载导入模板")
-    @GetMapping(value = "/hosts/templates/download")
-    public void downloadHostTemplate(HttpServletResponse response) {
-        try {
-            hostService.downloadHostTemplate(response);
-        } catch (IOException e) {
-            log.error("failed to download template", e);
-            throw new ServiceException(ErrorCode.DOWNLOAD_FILE_EXCEPTION);
-        }
+    public IPage<Host> listHost(
+            @RequestParam @Min(0) Integer page,
+            @RequestParam @Min(1) Integer size,
+            @RequestParam(required = false) @Length(max = 64) String ip) {
+        return hostService.listHost(page, size, ip);
     }
 }

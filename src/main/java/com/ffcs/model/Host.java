@@ -13,8 +13,4 @@ public class Host {
     private Integer id;
 
     private String ip;
-
-    private Integer type;
-
-    private String name;
 }

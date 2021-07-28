@@ -11,17 +11,4 @@
             (#{item.ip}, #{item.name}, #{item.type})
         </foreach>
     </insert>
-    <select id="listHost" parameterType="list" resultType="Host">
-        SELECT id, ip, name, type
-        FROM host
-        <where>
-            <if test="name != null and name != ''">
-                LOCATE(#{name}, name) > 0
-            </if>
-            <if test="ip != null and ip != ''">
-                LOCATE(#{ip}, ip) > 0
-            </if>
-        </where>
-        LIMIT #{offset}, #{limit}
-    </select>
 </mapper>

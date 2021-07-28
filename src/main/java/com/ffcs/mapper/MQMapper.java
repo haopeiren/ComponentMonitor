@@ -1,5 +1,6 @@
 package com.ffcs.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.ffcs.model.MQInstance;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -13,7 +14,7 @@ import java.util.List;
  * @since 2021/7/16
  */
 @Mapper
-public interface MQMapper {
+public interface MQMapper extends BaseMapper<MQInstance> {
     /**
      * 保存MQ实例信息
      *
@@ -27,19 +28,4 @@ public interface MQMapper {
      * @param instanceIds MQ实例列表
      */
     void deleteMQInstance(List<Integer> instanceIds);
-
-    /**
-     * 查询所有MQ实例信息
-     *
-     * @return MQ实例信息列表
-     */
-    List<MQInstance> queryMQInstanceList(@Param("limit") Integer limit, @Param("offset") Integer offset);
-
-    /**
-     * 根据id查询MQ实例
-     *
-     * @param id 实例ID
-     * @return  实例详情
-     */
-    MQInstance queryMQInstanceById(@Param("id") Integer id);
 }

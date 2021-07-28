@@ -30,21 +30,6 @@
         </foreach>
     </insert>
 
-    <select id="queryMQInstanceList" resultType="MQInstance">
-        SELECT <include refid="columns"/>
-        FROM mq_cluster
-<!--        WHERE `DELETE` = 0-->
-        <if test="limit != null and offset != null">
-            LIMIT #{offset}, #{limit}
-        </if>
-    </select>
-
-    <select id="queryMQInstanceById" parameterType="int" resultType="MQInstance">
-        SELECT <include refid="columns"/>
-        FROM mq_cluster
-        WHERE `DELETE` = 0 AND id = #{id}
-    </select>
-
     <update id="deleteMQInstance" parameterType="list">
         UPDATE mq_cluster
         SET `delete` = 1, sync_time = CURRENT_TIMESTAMP

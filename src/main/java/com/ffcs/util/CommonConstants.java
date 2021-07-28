@@ -24,8 +24,4 @@ public interface CommonConstants {
     String DB_MYSQL_DRIVER = "com.mysql.cj.jdbc.Driver";
 
     String DB_MYSQL_URL = "jdbc:mysql://{IP}:{PORT}/{DATABASE}?useUnicode=true&characterEncoding=utf8&useSSL=false";
-
-    Integer DEFAULT_PAGE_LIMIT = 10;
-
-    Integer DEFAULT_PAGE_OFFSET = 0;
 }

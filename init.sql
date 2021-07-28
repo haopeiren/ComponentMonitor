@@ -1,30 +1,26 @@
+CREATE TABLE `components` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增id',
+  `ip` varchar(255)  NOT NULL COMMENT 'ip',
+  `port` int(11) NOT NULL COMMENT 'port',
+  `user_name` varchar(255)  DEFAULT NULL COMMENT '用户名',
+  `user_pass` varchar(255)  DEFAULT NULL COMMENT '密码',
+  `db_name`    varchar(64) NOT NULL COMMENT '数据库名',
+  `component_type` int(11) NOT NULL COMMENT '组件类型1TELEDB,2DUAL,3POSTGRESQL,4CACHE,5ES,6NAMESPACE,7MQ,8SLB,9DFS,10CCSE',
+  `env_type` int(11)     NOT NULL COMMENT '环境1生产2测试',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+INSERT INTO `components` (`ip`, `port`, `user_name`, `user_pass`, `db_name`,  `component_type`, `env_type`)
+VALUE ('133.64.171.71', 10001, 'mq_user', '3edc4rfv', 'ctgmq27x', 7, 2);
+INSERT INTO `components` (`ip`, `port`, `user_name`, `user_pass`, `db_name`,  `component_type`, `env_type`)
+VALUE ('133.64.171.6', 10001, 'mq_user', 'hsl_@EB.93at', 'ctgmq27x', 7, 1);
+
 CREATE TABLE `host` (
     `id`    int(11)         AUTO_INCREMENT  COMMENT 'id',
     `ip`    varchar(20)     NOT NULL    UNIQUE    COMMENT 'ip',
-    `type`  int(10)         NOT NULL    COMMENT '1表示物理机， 2表示虚拟机',
-    `name`  varchar(64)     NOT NULL    COMMENT '主机名',
+    `components`    varchar(255)    COMMENT '主机组件类型',
     PRIMARY KEY(`id`),
     UNIQUE(`ip`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='主机表';
-
-CREATE TABLE `component` (
-    `id` int(11)    NOT NULL 'id',
-    `name`  varchar(64) NOT NULL '组件名',
-    `value` int(11)     NOT NULL `value`,
-    PRIMARY KEY (`id`)
-)ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='';
-
-CREATE TABLE `components` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增id',
-  `connect_type` int(11) NOT NULL COMMENT '连接类型 1表示MYSQL',
-  `ip` varchar(255) COLLATE utf8mb4_bin NOT NULL COMMENT 'ip',
-  `port` int(11) NOT NULL COMMENT 'port',
-  `username` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '用户名',
-  `password` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '密码',
-  `component_id` int(11) NOT NULL COMMENT '组件类型 1MQ',
-  `database` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '数据库名',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 CREATE TABLE `mq_cluster` (
   `id` int(20) NOT NULL,
@@ -51,7 +47,8 @@ CREATE TABLE `mq_cluster` (
   `bak_varchar_1` varchar(255) DEFAULT NULL COMMENT 'varchar备用1',
   `bak_varchar_2` varchar(255) DEFAULT NULL COMMENT 'varchar备用2',
   `ipv6_flag` varchar(10) DEFAULT '0' COMMENT 'ipv6 flag',
-  `delete` int(10) DEFAULT '0' COMMENT '该实例是否已删除',
+  `del` int(10) DEFAULT '0' COMMENT '该实例是否已删除',
   `sync_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '发现时间',
-  PRIMARY KEY (`id`)
+  `env_type` int(11)     NOT NULL COMMENT '环境1生产2测试',
+  PRIMARY KEY (`id`, `env_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='集群表';
